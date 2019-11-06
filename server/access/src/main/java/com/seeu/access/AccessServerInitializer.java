@@ -1,6 +1,6 @@
-package com.haust.access;
+package com.seeu.access;
 
-import com.haust.framework.websocket.WebsocketServer;
+import com.seeu.framework.websocket.WebsocketServer;
 import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

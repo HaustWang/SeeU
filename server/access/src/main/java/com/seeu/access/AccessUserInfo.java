@@ -1,8 +1,7 @@
-package com.haust.access;
+package com.seeu.access;
 
 import com.google.gson.Gson;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import java.io.Serializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

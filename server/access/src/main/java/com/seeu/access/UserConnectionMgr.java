@@ -1,4 +1,4 @@
-package com.haust.access;
+package com.seeu.access;
 
 import io.netty.channel.ChannelHandlerContext;
 import java.io.Serializable;
