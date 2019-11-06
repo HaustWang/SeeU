@@ -1,0 +1,13 @@
+syntax="proto3";
+
+
+package com.haust.framework.websocket;
+
+option java_package = "com.haust.framework.websocket";
+option java_outer_classname="WsMsg";
+
+message wsMsg {
+    int32 msgSeq = 1;           //msgid，客户端请求或服务端返回的标识，请求和响应返回的id一致。即可以使用相同的msgid确保消息流
+    string msgId = 2;         //具体消息命令字定义，比如：user.login
+    bytes content = 3;          //消息内容。
+}

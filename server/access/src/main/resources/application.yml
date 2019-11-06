@@ -1,0 +1,13 @@
+server:
+  id: 1
+
+websocket:
+  port: 9999
+
+#spring.main.web-application-type=none
+spring:
+  main:
+    web-application-type: none
+  profiles:
+    active: dev
+
