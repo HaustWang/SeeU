@@ -20,7 +20,7 @@ public final class WsMsg {
 
     /**
      * <pre>
-     *msgid，客户端请求或服务端返回的标识，请求和响应返回的id一致。即可以使用相同的msgid确保消息流
+     *客户端请求或服务端消息唯一标识，请求和响应返回的id一致。
      * </pre>
      *
      * <code>int32 msgSeq = 1;</code>
@@ -157,7 +157,7 @@ public final class WsMsg {
     private int msgSeq_;
     /**
      * <pre>
-     *msgid，客户端请求或服务端返回的标识，请求和响应返回的id一致。即可以使用相同的msgid确保消息流
+     *客户端请求或服务端消息唯一标识，请求和响应返回的id一致。
      * </pre>
      *
      * <code>int32 msgSeq = 1;</code>
@@ -564,7 +564,7 @@ public final class WsMsg {
       private int msgSeq_ ;
       /**
        * <pre>
-       *msgid，客户端请求或服务端返回的标识，请求和响应返回的id一致。即可以使用相同的msgid确保消息流
+       *客户端请求或服务端消息唯一标识，请求和响应返回的id一致。
        * </pre>
        *
        * <code>int32 msgSeq = 1;</code>
@@ -575,7 +575,7 @@ public final class WsMsg {
       }
       /**
        * <pre>
-       *msgid，客户端请求或服务端返回的标识，请求和响应返回的id一致。即可以使用相同的msgid确保消息流
+       *客户端请求或服务端消息唯一标识，请求和响应返回的id一致。
        * </pre>
        *
        * <code>int32 msgSeq = 1;</code>
@@ -590,7 +590,7 @@ public final class WsMsg {
       }
       /**
        * <pre>
-       *msgid，客户端请求或服务端返回的标识，请求和响应返回的id一致。即可以使用相同的msgid确保消息流
+       *客户端请求或服务端消息唯一标识，请求和响应返回的id一致。
        * </pre>
        *
        * <code>int32 msgSeq = 1;</code>
@@ -810,10 +810,10 @@ public final class WsMsg {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\013wsMsg.proto\022\035com.seeu.framework.webso" +
-      "cket\"7\n\005wsMsg\022\016\n\006msgSeq\030\001 \001(\005\022\r\n\005msgId\030\002" +
-      " \001(\t\022\017\n\007content\030\003 \001(\014B&\n\035com.seeu.frame" +
-      "work.websocketB\005WsMsgb\006proto3"
+      "\n\013wsMsg.proto\022\034com.seeu.framework.websoc" +
+      "ket\"7\n\005wsMsg\022\016\n\006msgSeq\030\001 \001(\005\022\r\n\005msgId\030\002 " +
+      "\001(\t\022\017\n\007content\030\003 \001(\014B%\n\034com.seeu.framewo" +
+      "rk.websocketB\005WsMsgb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

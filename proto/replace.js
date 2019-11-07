@@ -19,7 +19,7 @@ fs.readdir(filePath, 'utf8', function(err, data) {
 					return console.log(err);
 				}
 
-				var result = file.replace(/com.haust.framework.websocket/g, messagePackage);
+				var result = file.replace(/com.seeu.framework.websocket/g, messagePackage);
 				fs.writeFile(filePath + "/" + item, result, "utf8", function(err) {
 					if(err) {
 						return console.log(err);
