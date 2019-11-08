@@ -5,6 +5,7 @@ import com.seeu.framework.discover.DiscoverClient;
 import com.seeu.framework.discover.ServerInfo;
 import com.seeu.framework.rpc.RpcMsg.ServerType;
 import com.seeu.framework.utils.FuncUtil;
+import com.seeu.proto.Discover;
 import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -73,6 +74,20 @@ public class RpcClientManger {
         RpcBaseClient client = clientMap.get(serverId);
         if (null == client) {
             //获取client信息，并建立建立连接
+            Discover.getServiceInfoResp infoResp = discoverClient.getServiceInfo(serverType, serverId);
+            if(null == infoResp) {
+                logger.error("can't get any server, serverType: {}, serverId: {}", serverType, serverId);
+                return null;
+            }
+
+            if(infoResp.getSvrId() != serverId) {
+                logger.warn("get server {} and id {} but return id is {}", serverType, serverId, infoResp.getSvrId());
+            }
+
+            client = new RpcBaseClient();
+            client.connect(infoResp.getHost(), infoResp.getPort(), clientHandler);
+
+            clientMap.put(serverId, client);
         }
 
         RpcMsg.request request = generateRpcRequest(method, msg, needResponse);

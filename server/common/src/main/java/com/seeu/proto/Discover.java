@@ -34,6 +34,24 @@ public final class Discover {
      * @return The svrId.
      */
     int getSvrId();
+
+    /**
+     * <code>string host = 3;</code>
+     * @return The host.
+     */
+    java.lang.String getHost();
+    /**
+     * <code>string host = 3;</code>
+     * @return The bytes for host.
+     */
+    com.google.protobuf.ByteString
+        getHostBytes();
+
+    /**
+     * <code>int32 port = 4;</code>
+     * @return The port.
+     */
+    int getPort();
   }
   /**
    * Protobuf type {@code com.seeu.proto.register}
@@ -49,6 +67,7 @@ public final class Discover {
     }
     private register() {
       svrType_ = 0;
+      host_ = "";
     }
 
     @java.lang.Override
@@ -90,6 +109,17 @@ public final class Discover {
             case 16: {
 
               svrId_ = input.readInt32();
+              break;
+            }
+            case 26: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              host_ = s;
+              break;
+            }
+            case 32: {
+
+              port_ = input.readInt32();
               break;
             }
             default: {
@@ -153,6 +183,52 @@ public final class Discover {
       return svrId_;
     }
 
+    public static final int HOST_FIELD_NUMBER = 3;
+    private volatile java.lang.Object host_;
+    /**
+     * <code>string host = 3;</code>
+     * @return The host.
+     */
+    public java.lang.String getHost() {
+      java.lang.Object ref = host_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        host_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string host = 3;</code>
+     * @return The bytes for host.
+     */
+    public com.google.protobuf.ByteString
+        getHostBytes() {
+      java.lang.Object ref = host_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        host_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PORT_FIELD_NUMBER = 4;
+    private int port_;
+    /**
+     * <code>int32 port = 4;</code>
+     * @return The port.
+     */
+    public int getPort() {
+      return port_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -173,6 +249,12 @@ public final class Discover {
       if (svrId_ != 0) {
         output.writeInt32(2, svrId_);
       }
+      if (!getHostBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, host_);
+      }
+      if (port_ != 0) {
+        output.writeInt32(4, port_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -189,6 +271,13 @@ public final class Discover {
       if (svrId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(2, svrId_);
+      }
+      if (!getHostBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, host_);
+      }
+      if (port_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(4, port_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -208,6 +297,10 @@ public final class Discover {
       if (svrType_ != other.svrType_) return false;
       if (getSvrId()
           != other.getSvrId()) return false;
+      if (!getHost()
+          .equals(other.getHost())) return false;
+      if (getPort()
+          != other.getPort()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -223,6 +316,10 @@ public final class Discover {
       hash = (53 * hash) + svrType_;
       hash = (37 * hash) + SVRID_FIELD_NUMBER;
       hash = (53 * hash) + getSvrId();
+      hash = (37 * hash) + HOST_FIELD_NUMBER;
+      hash = (53 * hash) + getHost().hashCode();
+      hash = (37 * hash) + PORT_FIELD_NUMBER;
+      hash = (53 * hash) + getPort();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -360,6 +457,10 @@ public final class Discover {
 
         svrId_ = 0;
 
+        host_ = "";
+
+        port_ = 0;
+
         return this;
       }
 
@@ -388,6 +489,8 @@ public final class Discover {
         com.seeu.proto.Discover.register result = new com.seeu.proto.Discover.register(this);
         result.svrType_ = svrType_;
         result.svrId_ = svrId_;
+        result.host_ = host_;
+        result.port_ = port_;
         onBuilt();
         return result;
       }
@@ -441,6 +544,13 @@ public final class Discover {
         }
         if (other.getSvrId() != 0) {
           setSvrId(other.getSvrId());
+        }
+        if (!other.getHost().isEmpty()) {
+          host_ = other.host_;
+          onChanged();
+        }
+        if (other.getPort() != 0) {
+          setPort(other.getPort());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -549,6 +659,112 @@ public final class Discover {
       public Builder clearSvrId() {
         
         svrId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object host_ = "";
+      /**
+       * <code>string host = 3;</code>
+       * @return The host.
+       */
+      public java.lang.String getHost() {
+        java.lang.Object ref = host_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          host_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string host = 3;</code>
+       * @return The bytes for host.
+       */
+      public com.google.protobuf.ByteString
+          getHostBytes() {
+        java.lang.Object ref = host_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          host_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string host = 3;</code>
+       * @param value The host to set.
+       * @return This builder for chaining.
+       */
+      public Builder setHost(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        host_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string host = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearHost() {
+        
+        host_ = getDefaultInstance().getHost();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string host = 3;</code>
+       * @param value The bytes for host to set.
+       * @return This builder for chaining.
+       */
+      public Builder setHostBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        host_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int port_ ;
+      /**
+       * <code>int32 port = 4;</code>
+       * @return The port.
+       */
+      public int getPort() {
+        return port_;
+      }
+      /**
+       * <code>int32 port = 4;</code>
+       * @param value The port to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPort(int value) {
+        
+        port_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 port = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPort() {
+        
+        port_ = 0;
         onChanged();
         return this;
       }
@@ -2752,17 +2968,17 @@ public final class Discover {
   static {
     java.lang.String[] descriptorData = {
       "\n\016discover.proto\022\016com.seeu.proto\032\014rpcMsg" +
-      ".proto\"N\n\010register\0223\n\007svrType\030\001 \001(\0162\".co" +
+      ".proto\"j\n\010register\0223\n\007svrType\030\001 \001(\0162\".co" +
       "m.seeu.framework.rpc.ServerType\022\r\n\005svrId" +
-      "\030\002 \001(\005\"P\n\nunregister\0223\n\007svrType\030\001 \001(\0162\"." +
-      "com.seeu.framework.rpc.ServerType\022\r\n\005svr" +
-      "Id\030\002 \001(\005\"W\n\021getServiceInfoReq\0223\n\007svrType" +
-      "\030\001 \001(\0162\".com.seeu.framework.rpc.ServerTy" +
-      "pe\022\r\n\005svrId\030\002 \001(\005\"t\n\022getServiceInfoResp\022" +
-      "3\n\007svrType\030\001 \001(\0162\".com.seeu.framework.rp" +
-      "c.ServerType\022\r\n\005svrId\030\002 \001(\005\022\014\n\004host\030\003 \001(" +
-      "\t\022\014\n\004port\030\004 \001(\005B\032\n\016com.seeu.protoB\010Disco" +
-      "verb\006proto3"
+      "\030\002 \001(\005\022\014\n\004host\030\003 \001(\t\022\014\n\004port\030\004 \001(\005\"P\n\nun" +
+      "register\0223\n\007svrType\030\001 \001(\0162\".com.seeu.fra" +
+      "mework.rpc.ServerType\022\r\n\005svrId\030\002 \001(\005\"W\n\021" +
+      "getServiceInfoReq\0223\n\007svrType\030\001 \001(\0162\".com" +
+      ".seeu.framework.rpc.ServerType\022\r\n\005svrId\030" +
+      "\002 \001(\005\"t\n\022getServiceInfoResp\0223\n\007svrType\030\001" +
+      " \001(\0162\".com.seeu.framework.rpc.ServerType" +
+      "\022\r\n\005svrId\030\002 \001(\005\022\014\n\004host\030\003 \001(\t\022\014\n\004port\030\004 " +
+      "\001(\005B\032\n\016com.seeu.protoB\010Discoverb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -2774,7 +2990,7 @@ public final class Discover {
     internal_static_com_seeu_proto_register_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_seeu_proto_register_descriptor,
-        new java.lang.String[] { "SvrType", "SvrId", });
+        new java.lang.String[] { "SvrType", "SvrId", "Host", "Port", });
     internal_static_com_seeu_proto_unregister_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_com_seeu_proto_unregister_fieldAccessorTable = new

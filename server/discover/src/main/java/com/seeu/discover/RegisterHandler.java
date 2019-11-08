@@ -10,6 +10,9 @@ public interface RegisterHandler {
     @RpcMethod(method = "register", proto = "Discover.register", type = ServerType.UNKNOWN)
     MessageLite register(MessageLite message);
 
-    @RpcMethod(method = "unregister", proto = "Discover.register", type = ServerType.UNKNOWN)
+    @RpcMethod(method = "unregister", proto = "Discover.unregister", type = ServerType.UNKNOWN)
     MessageLite unregister(MessageLite message);
+
+    @RpcMethod(method = "getServiceInfo", proto = "Discover.getServiceInfoReq", type = ServerType.UNKNOWN)
+    MessageLite getServiceInfo(MessageLite message);
 }

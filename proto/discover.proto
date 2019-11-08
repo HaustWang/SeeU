@@ -10,6 +10,8 @@ option java_outer_classname="Discover";
 message register {
     com.seeu.framework.rpc.ServerType svrType = 1;
     int32 svrId = 2;
+	string host = 3;
+	int32 port = 4;
 }
 
 message unregister {

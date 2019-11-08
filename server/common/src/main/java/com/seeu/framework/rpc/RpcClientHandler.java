@@ -42,7 +42,7 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<response> {
         }
     }
 
-    response write(RpcMsg.request msg, RpcBaseClient client) throws Exception {
+    public response write(RpcMsg.request msg, RpcBaseClient client) throws Exception {
         Channel channel = client.getChannel();
 
         if (!msg.getNeedResponse()) {

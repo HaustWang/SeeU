@@ -4,7 +4,6 @@ import com.google.protobuf.MessageLite;
 import com.seeu.framework.rpc.RpcMsg.ServerType;
 import com.seeu.framework.rpc.RpcServerHandler;
 import com.seeu.proto.Discover;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DiscoverHandler implements RegisterHandler {
 
-    private Map<ServerType, Set<Integer>> serverTypeSetMap = new ConcurrentHashMap<>();
+    private Map<ServerType, Map<Integer, Discover.register>> serverTypeSetMap = new ConcurrentHashMap<>();
 
     @Autowired
     private RpcServerHandler handler;
@@ -24,8 +23,9 @@ public class DiscoverHandler implements RegisterHandler {
         Discover.register register = (Discover.register) message;
 
         ServerType type = register.getSvrType();
-        Set<Integer> serverSet = serverTypeSetMap.computeIfAbsent(type, k -> new HashSet<>());
-        serverSet.add(register.getSvrId());
+        Map<Integer, Discover.register> serverMap = serverTypeSetMap
+            .computeIfAbsent(type, k -> new ConcurrentHashMap<>());
+        serverMap.put(register.getSvrId(), register);
 
         return null;
     }
@@ -35,13 +35,42 @@ public class DiscoverHandler implements RegisterHandler {
         Discover.unregister unregister = (Discover.unregister) message;
 
         ServerType type = unregister.getSvrType();
-        Set<Integer> serverSet = serverTypeSetMap.get(type);
-        if(null == serverSet) {
+        Map<Integer, Discover.register> serverMap = serverTypeSetMap.get(type);
+        if (null == serverMap) {
             return null;
         }
 
-        serverSet.remove(unregister.getSvrId());
+        serverMap.remove(unregister.getSvrId());
 
         return null;
+    }
+
+    @Override
+    public MessageLite getServiceInfo(MessageLite message) {
+        Discover.getServiceInfoReq infoReq = (Discover.getServiceInfoReq) message;
+
+        Discover.getServiceInfoResp.Builder builder = Discover.getServiceInfoResp.newBuilder();
+
+        Map<Integer, Discover.register> serverMap = serverTypeSetMap.get(infoReq.getSvrType());
+        if (null == serverMap) {
+            builder.setSvrType(ServerType.UNKNOWN);
+        } else {
+            builder.setSvrType(infoReq.getSvrType());
+
+            Discover.register register = serverMap.get(infoReq.getSvrId());
+            if(null == register) {
+                register = serverMap.values().iterator().next();
+            }
+
+            if(null != register) {
+                builder.setSvrId(infoReq.getSvrId());
+                builder.setHost(register.getHost());
+                builder.setPort(register.getPort());
+            } else {
+                builder.setSvrType(ServerType.UNKNOWN);
+            }
+        }
+
+        return builder.build();
     }
 }
