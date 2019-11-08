@@ -19,7 +19,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+@Component
 public class RpcBaseClient {
 
     private static final Logger logger = LoggerFactory.getLogger(RpcBaseClient.class);
@@ -31,6 +33,14 @@ public class RpcBaseClient {
     protected Channel channel;
     protected String host;
     protected int port;
+
+    public String getHost() {
+        return host;
+    }
+
+    public int getPort() {
+        return port;
+    }
 
     public boolean isConnected() {
         return null != channel && channel.isActive();

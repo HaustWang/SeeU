@@ -1,0 +1,32 @@
+syntax="proto3";
+
+import "rpcMsg.proto";
+
+package com.seeu.proto;
+
+option java_package = "com.seeu.proto";
+option java_outer_classname="Discover";
+
+message register {
+    com.seeu.framework.rpc.ServerType svrType = 1;
+    int32 svrId = 2;
+}
+
+message unregister {
+	com.seeu.framework.rpc.ServerType svrType = 1;
+    int32 svrId = 2;
+}
+
+//向服务发现服务获取指定服务信息
+message getServiceInfoReq {
+	com.seeu.framework.rpc.ServerType svrType = 1;		//服务类型
+    int32 svrId = 2;									//服务id
+}
+
+//向服务发现服务获取指定服务信息
+message getServiceInfoResp {
+	com.seeu.framework.rpc.ServerType svrType = 1;		//服务类型，若该服务类型不存在，则会返回UNKNOWN
+    int32 svrId = 2;									//服务id,若请求的服务不存在，则会随机分配一个同类服务
+	string host = 3;
+	int32 port = 4;
+}

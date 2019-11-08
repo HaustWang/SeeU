@@ -2,6 +2,7 @@ package com.seeu.framework.rpc;
 
 import com.seeu.framework.rpc.RpcMsg.response;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import java.util.Map;
@@ -13,7 +14,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+@Component
+@Sharable
 public class RpcClientHandler extends SimpleChannelInboundHandler<response> {
     private static final Logger logger = LoggerFactory.getLogger(RpcClientHandler.class);
 

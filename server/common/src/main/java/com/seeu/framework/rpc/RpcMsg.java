@@ -14,6 +14,119 @@ public final class RpcMsg {
     registerAllExtensions(
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
+  /**
+   * Protobuf enum {@code com.seeu.framework.rpc.ServerType}
+   */
+  public enum ServerType
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>UNKNOWN = 0;</code>
+     */
+    UNKNOWN(0),
+    /**
+     * <code>DISCOVER = 1;</code>
+     */
+    DISCOVER(1),
+    /**
+     * <code>ACCESS = 2;</code>
+     */
+    ACCESS(2),
+    UNRECOGNIZED(-1),
+    ;
+
+    /**
+     * <code>UNKNOWN = 0;</code>
+     */
+    public static final int UNKNOWN_VALUE = 0;
+    /**
+     * <code>DISCOVER = 1;</code>
+     */
+    public static final int DISCOVER_VALUE = 1;
+    /**
+     * <code>ACCESS = 2;</code>
+     */
+    public static final int ACCESS_VALUE = 2;
+
+
+    public final int getNumber() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalArgumentException(
+            "Can't get the number of an unknown enum value.");
+      }
+      return value;
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static ServerType valueOf(int value) {
+      return forNumber(value);
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     */
+    public static ServerType forNumber(int value) {
+      switch (value) {
+        case 0: return UNKNOWN;
+        case 1: return DISCOVER;
+        case 2: return ACCESS;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<ServerType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        ServerType> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<ServerType>() {
+            public ServerType findValueByNumber(int number) {
+              return ServerType.forNumber(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(ordinal());
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return com.seeu.framework.rpc.RpcMsg.getDescriptor().getEnumTypes().get(0);
+    }
+
+    private static final ServerType[] VALUES = values();
+
+    public static ServerType valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      if (desc.getIndex() == -1) {
+        return UNRECOGNIZED;
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int value;
+
+    private ServerType(int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:com.seeu.framework.rpc.ServerType)
+  }
+
   public interface requestOrBuilder extends
       // @@protoc_insertion_point(interface_extends:com.seeu.framework.rpc.request)
       com.google.protobuf.MessageOrBuilder {
@@ -29,11 +142,28 @@ public final class RpcMsg {
     int getMsgSeq();
 
     /**
+     * <code>.com.seeu.framework.rpc.ServerType svrType = 2;</code>
+     * @return The enum numeric value on the wire for svrType.
+     */
+    int getSvrTypeValue();
+    /**
+     * <code>.com.seeu.framework.rpc.ServerType svrType = 2;</code>
+     * @return The svrType.
+     */
+    com.seeu.framework.rpc.RpcMsg.ServerType getSvrType();
+
+    /**
+     * <code>int32 svrId = 3;</code>
+     * @return The svrId.
+     */
+    int getSvrId();
+
+    /**
      * <pre>
      *具体消息命令字定义，比如：user.login
      * </pre>
      *
-     * <code>string method = 2;</code>
+     * <code>string method = 4;</code>
      * @return The method.
      */
     java.lang.String getMethod();
@@ -42,7 +172,7 @@ public final class RpcMsg {
      *具体消息命令字定义，比如：user.login
      * </pre>
      *
-     * <code>string method = 2;</code>
+     * <code>string method = 4;</code>
      * @return The bytes for method.
      */
     com.google.protobuf.ByteString
@@ -53,7 +183,7 @@ public final class RpcMsg {
      *是否需要等待响应
      * </pre>
      *
-     * <code>bool needResponse = 3;</code>
+     * <code>bool needResponse = 5;</code>
      * @return The needResponse.
      */
     boolean getNeedResponse();
@@ -63,7 +193,7 @@ public final class RpcMsg {
      *消息内容。
      * </pre>
      *
-     * <code>bytes content = 4;</code>
+     * <code>bytes content = 6;</code>
      * @return The content.
      */
     com.google.protobuf.ByteString getContent();
@@ -81,6 +211,7 @@ public final class RpcMsg {
       super(builder);
     }
     private request() {
+      svrType_ = 0;
       method_ = "";
       content_ = com.google.protobuf.ByteString.EMPTY;
     }
@@ -120,18 +251,29 @@ public final class RpcMsg {
               msgSeq_ = input.readInt32();
               break;
             }
-            case 18: {
+            case 16: {
+              int rawValue = input.readEnum();
+
+              svrType_ = rawValue;
+              break;
+            }
+            case 24: {
+
+              svrId_ = input.readInt32();
+              break;
+            }
+            case 34: {
               java.lang.String s = input.readStringRequireUtf8();
 
               method_ = s;
               break;
             }
-            case 24: {
+            case 40: {
 
               needResponse_ = input.readBool();
               break;
             }
-            case 34: {
+            case 50: {
 
               content_ = input.readBytes();
               break;
@@ -182,14 +324,43 @@ public final class RpcMsg {
       return msgSeq_;
     }
 
-    public static final int METHOD_FIELD_NUMBER = 2;
+    public static final int SVRTYPE_FIELD_NUMBER = 2;
+    private int svrType_;
+    /**
+     * <code>.com.seeu.framework.rpc.ServerType svrType = 2;</code>
+     * @return The enum numeric value on the wire for svrType.
+     */
+    public int getSvrTypeValue() {
+      return svrType_;
+    }
+    /**
+     * <code>.com.seeu.framework.rpc.ServerType svrType = 2;</code>
+     * @return The svrType.
+     */
+    public com.seeu.framework.rpc.RpcMsg.ServerType getSvrType() {
+      @SuppressWarnings("deprecation")
+      com.seeu.framework.rpc.RpcMsg.ServerType result = com.seeu.framework.rpc.RpcMsg.ServerType.valueOf(svrType_);
+      return result == null ? com.seeu.framework.rpc.RpcMsg.ServerType.UNRECOGNIZED : result;
+    }
+
+    public static final int SVRID_FIELD_NUMBER = 3;
+    private int svrId_;
+    /**
+     * <code>int32 svrId = 3;</code>
+     * @return The svrId.
+     */
+    public int getSvrId() {
+      return svrId_;
+    }
+
+    public static final int METHOD_FIELD_NUMBER = 4;
     private volatile java.lang.Object method_;
     /**
      * <pre>
      *具体消息命令字定义，比如：user.login
      * </pre>
      *
-     * <code>string method = 2;</code>
+     * <code>string method = 4;</code>
      * @return The method.
      */
     public java.lang.String getMethod() {
@@ -209,7 +380,7 @@ public final class RpcMsg {
      *具体消息命令字定义，比如：user.login
      * </pre>
      *
-     * <code>string method = 2;</code>
+     * <code>string method = 4;</code>
      * @return The bytes for method.
      */
     public com.google.protobuf.ByteString
@@ -226,28 +397,28 @@ public final class RpcMsg {
       }
     }
 
-    public static final int NEEDRESPONSE_FIELD_NUMBER = 3;
+    public static final int NEEDRESPONSE_FIELD_NUMBER = 5;
     private boolean needResponse_;
     /**
      * <pre>
      *是否需要等待响应
      * </pre>
      *
-     * <code>bool needResponse = 3;</code>
+     * <code>bool needResponse = 5;</code>
      * @return The needResponse.
      */
     public boolean getNeedResponse() {
       return needResponse_;
     }
 
-    public static final int CONTENT_FIELD_NUMBER = 4;
+    public static final int CONTENT_FIELD_NUMBER = 6;
     private com.google.protobuf.ByteString content_;
     /**
      * <pre>
      *消息内容。
      * </pre>
      *
-     * <code>bytes content = 4;</code>
+     * <code>bytes content = 6;</code>
      * @return The content.
      */
     public com.google.protobuf.ByteString getContent() {
@@ -271,14 +442,20 @@ public final class RpcMsg {
       if (msgSeq_ != 0) {
         output.writeInt32(1, msgSeq_);
       }
+      if (svrType_ != com.seeu.framework.rpc.RpcMsg.ServerType.UNKNOWN.getNumber()) {
+        output.writeEnum(2, svrType_);
+      }
+      if (svrId_ != 0) {
+        output.writeInt32(3, svrId_);
+      }
       if (!getMethodBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, method_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, method_);
       }
       if (needResponse_ != false) {
-        output.writeBool(3, needResponse_);
+        output.writeBool(5, needResponse_);
       }
       if (!content_.isEmpty()) {
-        output.writeBytes(4, content_);
+        output.writeBytes(6, content_);
       }
       unknownFields.writeTo(output);
     }
@@ -293,16 +470,24 @@ public final class RpcMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(1, msgSeq_);
       }
+      if (svrType_ != com.seeu.framework.rpc.RpcMsg.ServerType.UNKNOWN.getNumber()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(2, svrType_);
+      }
+      if (svrId_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, svrId_);
+      }
       if (!getMethodBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, method_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, method_);
       }
       if (needResponse_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(3, needResponse_);
+          .computeBoolSize(5, needResponse_);
       }
       if (!content_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(4, content_);
+          .computeBytesSize(6, content_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -321,6 +506,9 @@ public final class RpcMsg {
 
       if (getMsgSeq()
           != other.getMsgSeq()) return false;
+      if (svrType_ != other.svrType_) return false;
+      if (getSvrId()
+          != other.getSvrId()) return false;
       if (!getMethod()
           .equals(other.getMethod())) return false;
       if (getNeedResponse()
@@ -340,6 +528,10 @@ public final class RpcMsg {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + MSGSEQ_FIELD_NUMBER;
       hash = (53 * hash) + getMsgSeq();
+      hash = (37 * hash) + SVRTYPE_FIELD_NUMBER;
+      hash = (53 * hash) + svrType_;
+      hash = (37 * hash) + SVRID_FIELD_NUMBER;
+      hash = (53 * hash) + getSvrId();
       hash = (37 * hash) + METHOD_FIELD_NUMBER;
       hash = (53 * hash) + getMethod().hashCode();
       hash = (37 * hash) + NEEDRESPONSE_FIELD_NUMBER;
@@ -482,6 +674,10 @@ public final class RpcMsg {
         super.clear();
         msgSeq_ = 0;
 
+        svrType_ = 0;
+
+        svrId_ = 0;
+
         method_ = "";
 
         needResponse_ = false;
@@ -515,6 +711,8 @@ public final class RpcMsg {
       public com.seeu.framework.rpc.RpcMsg.request buildPartial() {
         com.seeu.framework.rpc.RpcMsg.request result = new com.seeu.framework.rpc.RpcMsg.request(this);
         result.msgSeq_ = msgSeq_;
+        result.svrType_ = svrType_;
+        result.svrId_ = svrId_;
         result.method_ = method_;
         result.needResponse_ = needResponse_;
         result.content_ = content_;
@@ -568,6 +766,12 @@ public final class RpcMsg {
         if (other == com.seeu.framework.rpc.RpcMsg.request.getDefaultInstance()) return this;
         if (other.getMsgSeq() != 0) {
           setMsgSeq(other.getMsgSeq());
+        }
+        if (other.svrType_ != 0) {
+          setSvrTypeValue(other.getSvrTypeValue());
+        }
+        if (other.getSvrId() != 0) {
+          setSvrId(other.getSvrId());
         }
         if (!other.getMethod().isEmpty()) {
           method_ = other.method_;
@@ -650,13 +854,95 @@ public final class RpcMsg {
         return this;
       }
 
+      private int svrType_ = 0;
+      /**
+       * <code>.com.seeu.framework.rpc.ServerType svrType = 2;</code>
+       * @return The enum numeric value on the wire for svrType.
+       */
+      public int getSvrTypeValue() {
+        return svrType_;
+      }
+      /**
+       * <code>.com.seeu.framework.rpc.ServerType svrType = 2;</code>
+       * @param value The enum numeric value on the wire for svrType to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSvrTypeValue(int value) {
+        svrType_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.com.seeu.framework.rpc.ServerType svrType = 2;</code>
+       * @return The svrType.
+       */
+      public com.seeu.framework.rpc.RpcMsg.ServerType getSvrType() {
+        @SuppressWarnings("deprecation")
+        com.seeu.framework.rpc.RpcMsg.ServerType result = com.seeu.framework.rpc.RpcMsg.ServerType.valueOf(svrType_);
+        return result == null ? com.seeu.framework.rpc.RpcMsg.ServerType.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>.com.seeu.framework.rpc.ServerType svrType = 2;</code>
+       * @param value The svrType to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSvrType(com.seeu.framework.rpc.RpcMsg.ServerType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        svrType_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.com.seeu.framework.rpc.ServerType svrType = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSvrType() {
+        
+        svrType_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int svrId_ ;
+      /**
+       * <code>int32 svrId = 3;</code>
+       * @return The svrId.
+       */
+      public int getSvrId() {
+        return svrId_;
+      }
+      /**
+       * <code>int32 svrId = 3;</code>
+       * @param value The svrId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSvrId(int value) {
+        
+        svrId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 svrId = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSvrId() {
+        
+        svrId_ = 0;
+        onChanged();
+        return this;
+      }
+
       private java.lang.Object method_ = "";
       /**
        * <pre>
        *具体消息命令字定义，比如：user.login
        * </pre>
        *
-       * <code>string method = 2;</code>
+       * <code>string method = 4;</code>
        * @return The method.
        */
       public java.lang.String getMethod() {
@@ -676,7 +962,7 @@ public final class RpcMsg {
        *具体消息命令字定义，比如：user.login
        * </pre>
        *
-       * <code>string method = 2;</code>
+       * <code>string method = 4;</code>
        * @return The bytes for method.
        */
       public com.google.protobuf.ByteString
@@ -697,7 +983,7 @@ public final class RpcMsg {
        *具体消息命令字定义，比如：user.login
        * </pre>
        *
-       * <code>string method = 2;</code>
+       * <code>string method = 4;</code>
        * @param value The method to set.
        * @return This builder for chaining.
        */
@@ -716,7 +1002,7 @@ public final class RpcMsg {
        *具体消息命令字定义，比如：user.login
        * </pre>
        *
-       * <code>string method = 2;</code>
+       * <code>string method = 4;</code>
        * @return This builder for chaining.
        */
       public Builder clearMethod() {
@@ -730,7 +1016,7 @@ public final class RpcMsg {
        *具体消息命令字定义，比如：user.login
        * </pre>
        *
-       * <code>string method = 2;</code>
+       * <code>string method = 4;</code>
        * @param value The bytes for method to set.
        * @return This builder for chaining.
        */
@@ -752,7 +1038,7 @@ public final class RpcMsg {
        *是否需要等待响应
        * </pre>
        *
-       * <code>bool needResponse = 3;</code>
+       * <code>bool needResponse = 5;</code>
        * @return The needResponse.
        */
       public boolean getNeedResponse() {
@@ -763,7 +1049,7 @@ public final class RpcMsg {
        *是否需要等待响应
        * </pre>
        *
-       * <code>bool needResponse = 3;</code>
+       * <code>bool needResponse = 5;</code>
        * @param value The needResponse to set.
        * @return This builder for chaining.
        */
@@ -778,7 +1064,7 @@ public final class RpcMsg {
        *是否需要等待响应
        * </pre>
        *
-       * <code>bool needResponse = 3;</code>
+       * <code>bool needResponse = 5;</code>
        * @return This builder for chaining.
        */
       public Builder clearNeedResponse() {
@@ -794,7 +1080,7 @@ public final class RpcMsg {
        *消息内容。
        * </pre>
        *
-       * <code>bytes content = 4;</code>
+       * <code>bytes content = 6;</code>
        * @return The content.
        */
       public com.google.protobuf.ByteString getContent() {
@@ -805,7 +1091,7 @@ public final class RpcMsg {
        *消息内容。
        * </pre>
        *
-       * <code>bytes content = 4;</code>
+       * <code>bytes content = 6;</code>
        * @param value The content to set.
        * @return This builder for chaining.
        */
@@ -823,7 +1109,7 @@ public final class RpcMsg {
        *消息内容。
        * </pre>
        *
-       * <code>bytes content = 4;</code>
+       * <code>bytes content = 6;</code>
        * @return This builder for chaining.
        */
       public Builder clearContent() {
@@ -900,12 +1186,37 @@ public final class RpcMsg {
     int getMsgSeq();
 
     /**
-     * <code>string method = 2;</code>
+     * <code>.com.seeu.framework.rpc.ServerType svrType = 2;</code>
+     * @return The enum numeric value on the wire for svrType.
+     */
+    int getSvrTypeValue();
+    /**
+     * <code>.com.seeu.framework.rpc.ServerType svrType = 2;</code>
+     * @return The svrType.
+     */
+    com.seeu.framework.rpc.RpcMsg.ServerType getSvrType();
+
+    /**
+     * <code>int32 svrId = 3;</code>
+     * @return The svrId.
+     */
+    int getSvrId();
+
+    /**
+     * <pre>
+     *具体消息命令字定义，比如：user.login      
+     * </pre>
+     *
+     * <code>string method = 4;</code>
      * @return The method.
      */
     java.lang.String getMethod();
     /**
-     * <code>string method = 2;</code>
+     * <pre>
+     *具体消息命令字定义，比如：user.login      
+     * </pre>
+     *
+     * <code>string method = 4;</code>
      * @return The bytes for method.
      */
     com.google.protobuf.ByteString
@@ -913,20 +1224,10 @@ public final class RpcMsg {
 
     /**
      * <pre>
-     *具体消息命令字定义，比如：user.login
-     * </pre>
-     *
-     * <code>int32 code = 3;</code>
-     * @return The code.
-     */
-    int getCode();
-
-    /**
-     * <pre>
      *消息内容。
      * </pre>
      *
-     * <code>bytes content = 4;</code>
+     * <code>bytes content = 5;</code>
      * @return The content.
      */
     com.google.protobuf.ByteString getContent();
@@ -944,6 +1245,7 @@ public final class RpcMsg {
       super(builder);
     }
     private response() {
+      svrType_ = 0;
       method_ = "";
       content_ = com.google.protobuf.ByteString.EMPTY;
     }
@@ -983,18 +1285,24 @@ public final class RpcMsg {
               msgSeq_ = input.readInt32();
               break;
             }
-            case 18: {
+            case 16: {
+              int rawValue = input.readEnum();
+
+              svrType_ = rawValue;
+              break;
+            }
+            case 24: {
+
+              svrId_ = input.readInt32();
+              break;
+            }
+            case 34: {
               java.lang.String s = input.readStringRequireUtf8();
 
               method_ = s;
               break;
             }
-            case 24: {
-
-              code_ = input.readInt32();
-              break;
-            }
-            case 34: {
+            case 42: {
 
               content_ = input.readBytes();
               break;
@@ -1045,10 +1353,43 @@ public final class RpcMsg {
       return msgSeq_;
     }
 
-    public static final int METHOD_FIELD_NUMBER = 2;
+    public static final int SVRTYPE_FIELD_NUMBER = 2;
+    private int svrType_;
+    /**
+     * <code>.com.seeu.framework.rpc.ServerType svrType = 2;</code>
+     * @return The enum numeric value on the wire for svrType.
+     */
+    public int getSvrTypeValue() {
+      return svrType_;
+    }
+    /**
+     * <code>.com.seeu.framework.rpc.ServerType svrType = 2;</code>
+     * @return The svrType.
+     */
+    public com.seeu.framework.rpc.RpcMsg.ServerType getSvrType() {
+      @SuppressWarnings("deprecation")
+      com.seeu.framework.rpc.RpcMsg.ServerType result = com.seeu.framework.rpc.RpcMsg.ServerType.valueOf(svrType_);
+      return result == null ? com.seeu.framework.rpc.RpcMsg.ServerType.UNRECOGNIZED : result;
+    }
+
+    public static final int SVRID_FIELD_NUMBER = 3;
+    private int svrId_;
+    /**
+     * <code>int32 svrId = 3;</code>
+     * @return The svrId.
+     */
+    public int getSvrId() {
+      return svrId_;
+    }
+
+    public static final int METHOD_FIELD_NUMBER = 4;
     private volatile java.lang.Object method_;
     /**
-     * <code>string method = 2;</code>
+     * <pre>
+     *具体消息命令字定义，比如：user.login      
+     * </pre>
+     *
+     * <code>string method = 4;</code>
      * @return The method.
      */
     public java.lang.String getMethod() {
@@ -1064,7 +1405,11 @@ public final class RpcMsg {
       }
     }
     /**
-     * <code>string method = 2;</code>
+     * <pre>
+     *具体消息命令字定义，比如：user.login      
+     * </pre>
+     *
+     * <code>string method = 4;</code>
      * @return The bytes for method.
      */
     public com.google.protobuf.ByteString
@@ -1081,28 +1426,14 @@ public final class RpcMsg {
       }
     }
 
-    public static final int CODE_FIELD_NUMBER = 3;
-    private int code_;
-    /**
-     * <pre>
-     *具体消息命令字定义，比如：user.login
-     * </pre>
-     *
-     * <code>int32 code = 3;</code>
-     * @return The code.
-     */
-    public int getCode() {
-      return code_;
-    }
-
-    public static final int CONTENT_FIELD_NUMBER = 4;
+    public static final int CONTENT_FIELD_NUMBER = 5;
     private com.google.protobuf.ByteString content_;
     /**
      * <pre>
      *消息内容。
      * </pre>
      *
-     * <code>bytes content = 4;</code>
+     * <code>bytes content = 5;</code>
      * @return The content.
      */
     public com.google.protobuf.ByteString getContent() {
@@ -1126,14 +1457,17 @@ public final class RpcMsg {
       if (msgSeq_ != 0) {
         output.writeInt32(1, msgSeq_);
       }
-      if (!getMethodBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, method_);
+      if (svrType_ != com.seeu.framework.rpc.RpcMsg.ServerType.UNKNOWN.getNumber()) {
+        output.writeEnum(2, svrType_);
       }
-      if (code_ != 0) {
-        output.writeInt32(3, code_);
+      if (svrId_ != 0) {
+        output.writeInt32(3, svrId_);
+      }
+      if (!getMethodBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, method_);
       }
       if (!content_.isEmpty()) {
-        output.writeBytes(4, content_);
+        output.writeBytes(5, content_);
       }
       unknownFields.writeTo(output);
     }
@@ -1148,16 +1482,20 @@ public final class RpcMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(1, msgSeq_);
       }
-      if (!getMethodBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, method_);
-      }
-      if (code_ != 0) {
+      if (svrType_ != com.seeu.framework.rpc.RpcMsg.ServerType.UNKNOWN.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, code_);
+          .computeEnumSize(2, svrType_);
+      }
+      if (svrId_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, svrId_);
+      }
+      if (!getMethodBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, method_);
       }
       if (!content_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(4, content_);
+          .computeBytesSize(5, content_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1176,10 +1514,11 @@ public final class RpcMsg {
 
       if (getMsgSeq()
           != other.getMsgSeq()) return false;
+      if (svrType_ != other.svrType_) return false;
+      if (getSvrId()
+          != other.getSvrId()) return false;
       if (!getMethod()
           .equals(other.getMethod())) return false;
-      if (getCode()
-          != other.getCode()) return false;
       if (!getContent()
           .equals(other.getContent())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
@@ -1195,10 +1534,12 @@ public final class RpcMsg {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + MSGSEQ_FIELD_NUMBER;
       hash = (53 * hash) + getMsgSeq();
+      hash = (37 * hash) + SVRTYPE_FIELD_NUMBER;
+      hash = (53 * hash) + svrType_;
+      hash = (37 * hash) + SVRID_FIELD_NUMBER;
+      hash = (53 * hash) + getSvrId();
       hash = (37 * hash) + METHOD_FIELD_NUMBER;
       hash = (53 * hash) + getMethod().hashCode();
-      hash = (37 * hash) + CODE_FIELD_NUMBER;
-      hash = (53 * hash) + getCode();
       hash = (37 * hash) + CONTENT_FIELD_NUMBER;
       hash = (53 * hash) + getContent().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
@@ -1336,9 +1677,11 @@ public final class RpcMsg {
         super.clear();
         msgSeq_ = 0;
 
-        method_ = "";
+        svrType_ = 0;
 
-        code_ = 0;
+        svrId_ = 0;
+
+        method_ = "";
 
         content_ = com.google.protobuf.ByteString.EMPTY;
 
@@ -1369,8 +1712,9 @@ public final class RpcMsg {
       public com.seeu.framework.rpc.RpcMsg.response buildPartial() {
         com.seeu.framework.rpc.RpcMsg.response result = new com.seeu.framework.rpc.RpcMsg.response(this);
         result.msgSeq_ = msgSeq_;
+        result.svrType_ = svrType_;
+        result.svrId_ = svrId_;
         result.method_ = method_;
-        result.code_ = code_;
         result.content_ = content_;
         onBuilt();
         return result;
@@ -1423,12 +1767,15 @@ public final class RpcMsg {
         if (other.getMsgSeq() != 0) {
           setMsgSeq(other.getMsgSeq());
         }
+        if (other.svrType_ != 0) {
+          setSvrTypeValue(other.getSvrTypeValue());
+        }
+        if (other.getSvrId() != 0) {
+          setSvrId(other.getSvrId());
+        }
         if (!other.getMethod().isEmpty()) {
           method_ = other.method_;
           onChanged();
-        }
-        if (other.getCode() != 0) {
-          setCode(other.getCode());
         }
         if (other.getContent() != com.google.protobuf.ByteString.EMPTY) {
           setContent(other.getContent());
@@ -1504,9 +1851,95 @@ public final class RpcMsg {
         return this;
       }
 
+      private int svrType_ = 0;
+      /**
+       * <code>.com.seeu.framework.rpc.ServerType svrType = 2;</code>
+       * @return The enum numeric value on the wire for svrType.
+       */
+      public int getSvrTypeValue() {
+        return svrType_;
+      }
+      /**
+       * <code>.com.seeu.framework.rpc.ServerType svrType = 2;</code>
+       * @param value The enum numeric value on the wire for svrType to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSvrTypeValue(int value) {
+        svrType_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.com.seeu.framework.rpc.ServerType svrType = 2;</code>
+       * @return The svrType.
+       */
+      public com.seeu.framework.rpc.RpcMsg.ServerType getSvrType() {
+        @SuppressWarnings("deprecation")
+        com.seeu.framework.rpc.RpcMsg.ServerType result = com.seeu.framework.rpc.RpcMsg.ServerType.valueOf(svrType_);
+        return result == null ? com.seeu.framework.rpc.RpcMsg.ServerType.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>.com.seeu.framework.rpc.ServerType svrType = 2;</code>
+       * @param value The svrType to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSvrType(com.seeu.framework.rpc.RpcMsg.ServerType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        svrType_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.com.seeu.framework.rpc.ServerType svrType = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSvrType() {
+        
+        svrType_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int svrId_ ;
+      /**
+       * <code>int32 svrId = 3;</code>
+       * @return The svrId.
+       */
+      public int getSvrId() {
+        return svrId_;
+      }
+      /**
+       * <code>int32 svrId = 3;</code>
+       * @param value The svrId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSvrId(int value) {
+        
+        svrId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 svrId = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSvrId() {
+        
+        svrId_ = 0;
+        onChanged();
+        return this;
+      }
+
       private java.lang.Object method_ = "";
       /**
-       * <code>string method = 2;</code>
+       * <pre>
+       *具体消息命令字定义，比如：user.login      
+       * </pre>
+       *
+       * <code>string method = 4;</code>
        * @return The method.
        */
       public java.lang.String getMethod() {
@@ -1522,7 +1955,11 @@ public final class RpcMsg {
         }
       }
       /**
-       * <code>string method = 2;</code>
+       * <pre>
+       *具体消息命令字定义，比如：user.login      
+       * </pre>
+       *
+       * <code>string method = 4;</code>
        * @return The bytes for method.
        */
       public com.google.protobuf.ByteString
@@ -1539,7 +1976,11 @@ public final class RpcMsg {
         }
       }
       /**
-       * <code>string method = 2;</code>
+       * <pre>
+       *具体消息命令字定义，比如：user.login      
+       * </pre>
+       *
+       * <code>string method = 4;</code>
        * @param value The method to set.
        * @return This builder for chaining.
        */
@@ -1554,7 +1995,11 @@ public final class RpcMsg {
         return this;
       }
       /**
-       * <code>string method = 2;</code>
+       * <pre>
+       *具体消息命令字定义，比如：user.login      
+       * </pre>
+       *
+       * <code>string method = 4;</code>
        * @return This builder for chaining.
        */
       public Builder clearMethod() {
@@ -1564,7 +2009,11 @@ public final class RpcMsg {
         return this;
       }
       /**
-       * <code>string method = 2;</code>
+       * <pre>
+       *具体消息命令字定义，比如：user.login      
+       * </pre>
+       *
+       * <code>string method = 4;</code>
        * @param value The bytes for method to set.
        * @return This builder for chaining.
        */
@@ -1580,55 +2029,13 @@ public final class RpcMsg {
         return this;
       }
 
-      private int code_ ;
-      /**
-       * <pre>
-       *具体消息命令字定义，比如：user.login
-       * </pre>
-       *
-       * <code>int32 code = 3;</code>
-       * @return The code.
-       */
-      public int getCode() {
-        return code_;
-      }
-      /**
-       * <pre>
-       *具体消息命令字定义，比如：user.login
-       * </pre>
-       *
-       * <code>int32 code = 3;</code>
-       * @param value The code to set.
-       * @return This builder for chaining.
-       */
-      public Builder setCode(int value) {
-        
-        code_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       *具体消息命令字定义，比如：user.login
-       * </pre>
-       *
-       * <code>int32 code = 3;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearCode() {
-        
-        code_ = 0;
-        onChanged();
-        return this;
-      }
-
       private com.google.protobuf.ByteString content_ = com.google.protobuf.ByteString.EMPTY;
       /**
        * <pre>
        *消息内容。
        * </pre>
        *
-       * <code>bytes content = 4;</code>
+       * <code>bytes content = 5;</code>
        * @return The content.
        */
       public com.google.protobuf.ByteString getContent() {
@@ -1639,7 +2046,7 @@ public final class RpcMsg {
        *消息内容。
        * </pre>
        *
-       * <code>bytes content = 4;</code>
+       * <code>bytes content = 5;</code>
        * @param value The content to set.
        * @return This builder for chaining.
        */
@@ -1657,7 +2064,7 @@ public final class RpcMsg {
        *消息内容。
        * </pre>
        *
-       * <code>bytes content = 4;</code>
+       * <code>bytes content = 5;</code>
        * @return This builder for chaining.
        */
       public Builder clearContent() {
@@ -1738,12 +2145,17 @@ public final class RpcMsg {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\014rpcMsg.proto\022\026com.seeu.framework.rpc\"P" +
-      "\n\007request\022\016\n\006msgSeq\030\001 \001(\005\022\016\n\006method\030\002 \001(" +
-      "\t\022\024\n\014needResponse\030\003 \001(\010\022\017\n\007content\030\004 \001(\014" +
-      "\"I\n\010response\022\016\n\006msgSeq\030\001 \001(\005\022\016\n\006method\030\002" +
-      " \001(\t\022\014\n\004code\030\003 \001(\005\022\017\n\007content\030\004 \001(\014B \n\026c" +
-      "om.seeu.framework.rpcB\006RpcMsgb\006proto3"
+      "\n\014rpcMsg.proto\022\026com.seeu.framework.rpc\"\224" +
+      "\001\n\007request\022\016\n\006msgSeq\030\001 \001(\005\0223\n\007svrType\030\002 " +
+      "\001(\0162\".com.seeu.framework.rpc.ServerType\022" +
+      "\r\n\005svrId\030\003 \001(\005\022\016\n\006method\030\004 \001(\t\022\024\n\014needRe" +
+      "sponse\030\005 \001(\010\022\017\n\007content\030\006 \001(\014\"\177\n\010respons" +
+      "e\022\016\n\006msgSeq\030\001 \001(\005\0223\n\007svrType\030\002 \001(\0162\".com" +
+      ".seeu.framework.rpc.ServerType\022\r\n\005svrId\030" +
+      "\003 \001(\005\022\016\n\006method\030\004 \001(\t\022\017\n\007content\030\005 \001(\014*3" +
+      "\n\nServerType\022\013\n\007UNKNOWN\020\000\022\014\n\010DISCOVER\020\001\022" +
+      "\n\n\006ACCESS\020\002B \n\026com.seeu.framework.rpcB\006R" +
+      "pcMsgb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1754,13 +2166,13 @@ public final class RpcMsg {
     internal_static_com_seeu_framework_rpc_request_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_seeu_framework_rpc_request_descriptor,
-        new java.lang.String[] { "MsgSeq", "Method", "NeedResponse", "Content", });
+        new java.lang.String[] { "MsgSeq", "SvrType", "SvrId", "Method", "NeedResponse", "Content", });
     internal_static_com_seeu_framework_rpc_response_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_com_seeu_framework_rpc_response_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_seeu_framework_rpc_response_descriptor,
-        new java.lang.String[] { "MsgSeq", "Method", "Code", "Content", });
+        new java.lang.String[] { "MsgSeq", "SvrType", "SvrId", "Method", "Content", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

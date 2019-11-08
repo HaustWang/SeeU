@@ -46,9 +46,9 @@ public class RpcScanner implements BeanPostProcessor {
 
                             final String methodName = rpcMethod.method();
 
-                            if (RpcInvokerHolder.getServiceInvoker(methodName) == null) {
+                            if (RpcInvokerHolder.getServiceInvoker(rpcMethod.type(), methodName) == null) {
                                 RpcInvokerHolder
-                                    .addServiceInvoker(methodName,
+                                    .addServiceInvoker(rpcMethod.type(), methodName,
                                         Invoker.valueOf(method, bean, rpcMethod.proto()));
                             } else {
                                 logger.warn("repeated service method {}", methodName);
@@ -72,9 +72,9 @@ public class RpcScanner implements BeanPostProcessor {
 
                             final String methodName = rpcMethod.method();
 
-                            if (RpcInvokerHolder.getClientInvoker(methodName) == null) {
+                            if (RpcInvokerHolder.getClientInvoker(rpcMethod.type(), methodName) == null) {
                                 RpcInvokerHolder
-                                    .addClientInvoker(methodName,
+                                    .addClientInvoker(rpcMethod.type(), methodName,
                                         Invoker.valueOf(method, bean, rpcMethod.proto(), true));
                             } else {
                                 logger.warn("repeated client method {}", methodName);

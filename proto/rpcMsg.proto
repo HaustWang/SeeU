@@ -6,16 +6,25 @@ package com.seeu.framework.rpc;
 option java_package = "com.seeu.framework.rpc";
 option java_outer_classname="RpcMsg";
 
+enum ServerType {
+	UNKNOWN = 0;
+	DISCOVER = 1;
+	ACCESS = 2;
+}
+
 message request {
     int32 msgSeq = 1;           //消息唯一标识，与对应的response一致。
-    string method = 2;         //具体消息命令字定义，比如：user.login
-	bool needResponse = 3;	//是否需要等待响应
-    bytes content = 4;          //消息内容。
+	ServerType svrType = 2;
+	int32 svrId = 3;
+    string method = 4;         //具体消息命令字定义，比如：user.login
+	bool needResponse = 5;	//是否需要等待响应
+    bytes content = 6;          //消息内容。
 }
 
 message response {
     int32 msgSeq = 1;           //消息唯一标识，返回时与对应的request一致。
-	string method = 2;
-    int32 code = 3;         //具体消息命令字定义，比如：user.login
-    bytes content = 4;          //消息内容。
+	ServerType svrType = 2;
+	int32 svrId = 3;
+	string method = 4;			//具体消息命令字定义，比如：user.login      
+    bytes content = 5;          //消息内容。
 }

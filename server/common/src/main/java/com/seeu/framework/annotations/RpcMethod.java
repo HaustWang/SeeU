@@ -1,5 +1,6 @@
 package com.seeu.framework.annotations;
 
+import com.seeu.framework.rpc.RpcMsg.ServerType;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -16,4 +17,5 @@ public @interface RpcMethod {
 
     String method();
     String proto();
+    ServerType type();
 }
