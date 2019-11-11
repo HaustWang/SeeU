@@ -1,0 +1,13 @@
+server:
+  id: 1
+  port: 18088
+
+#spring.main.web-application-type=none
+spring:
+  main:
+    web-application-type: none
+
+logging:
+  level:
+    root: debug
+

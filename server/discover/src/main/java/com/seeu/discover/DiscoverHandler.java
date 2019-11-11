@@ -1,17 +1,22 @@
 package com.seeu.discover;
 
+import com.google.protobuf.Message;
 import com.google.protobuf.MessageLite;
+import com.googlecode.protobuf.format.JsonFormat;
+import com.seeu.framework.discover.DiscoverClient;
 import com.seeu.framework.rpc.RpcMsg.ServerType;
 import com.seeu.framework.rpc.RpcServerHandler;
 import com.seeu.proto.Discover;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DiscoverHandler implements RegisterHandler {
+    private final static Logger logger = LoggerFactory.getLogger(DiscoverHandler.class);
 
     private Map<ServerType, Map<Integer, Discover.register>> serverTypeSetMap = new ConcurrentHashMap<>();
 
@@ -20,6 +25,7 @@ public class DiscoverHandler implements RegisterHandler {
 
     @Override
     public MessageLite register(MessageLite message) {
+        logger.info("server register: {}", JsonFormat.printToString((Message) message));
         Discover.register register = (Discover.register) message;
 
         ServerType type = register.getSvrType();
@@ -58,11 +64,11 @@ public class DiscoverHandler implements RegisterHandler {
             builder.setSvrType(infoReq.getSvrType());
 
             Discover.register register = serverMap.get(infoReq.getSvrId());
-            if(null == register) {
+            if (null == register) {
                 register = serverMap.values().iterator().next();
             }
 
-            if(null != register) {
+            if (null != register) {
                 builder.setSvrId(infoReq.getSvrId());
                 builder.setHost(register.getHost());
                 builder.setPort(register.getPort());

@@ -17,10 +17,13 @@ import org.springframework.stereotype.Component;
 public class RpcClientManger {
 
     private static final Logger logger = LoggerFactory.getLogger(RpcClientManger.class);
+
     @Autowired
     ServerInfo serverInfo;
+
     @Autowired
     DiscoverClient discoverClient;
+
     @Autowired
     RpcClientHandler clientHandler;
     Map<ServerType, Map<Integer, RpcBaseClient>> rpcClientMap = new HashMap<>();
@@ -74,20 +77,26 @@ public class RpcClientManger {
         RpcBaseClient client = clientMap.get(serverId);
         if (null == client) {
             //获取client信息，并建立建立连接
-            Discover.getServiceInfoResp infoResp = discoverClient.getServiceInfo(serverType, serverId);
-            if(null == infoResp) {
-                logger.error("can't get any server, serverType: {}, serverId: {}", serverType, serverId);
+            Discover.getServiceInfoResp infoResp = discoverClient
+                .getServiceInfo(serverType, serverId);
+            if (null == infoResp) {
+                logger.error("can't get any server, serverType: {}, serverId: {}", serverType,
+                    serverId);
                 return null;
             }
 
-            if(infoResp.getSvrId() != serverId) {
-                logger.warn("get server {} and id {} but return id is {}", serverType, serverId, infoResp.getSvrId());
+            if (infoResp.getSvrId() != serverId) {
+                logger.warn("get server {} and id {} but return id is {}", serverType, serverId,
+                    infoResp.getSvrId());
             }
 
-            client = new RpcBaseClient();
-            client.connect(infoResp.getHost(), infoResp.getPort(), clientHandler);
+            client = clientMap.get(infoResp.getSvrId());
+            if (null != client) {
+                client = new RpcBaseClient();
+                client.connect(infoResp.getHost(), infoResp.getPort(), clientHandler);
 
-            clientMap.put(serverId, client);
+                clientMap.put(serverId, client);
+            }
         }
 
         RpcMsg.request request = generateRpcRequest(method, msg, needResponse);

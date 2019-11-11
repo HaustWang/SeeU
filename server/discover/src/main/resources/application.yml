@@ -1,17 +1,6 @@
 server:
   id: 1
-
-websocket:
-  port: 9999
-
-service:
-  host: 0.0.0.0
-  port: 18081
-
-discover:
-  host: 127.0.0.1
   port: 18088
-
 
 #spring.main.web-application-type=none
 spring:
@@ -23,4 +12,4 @@ spring:
 logging:
   level:
     root: debug
-  file: log/access_${server.id}.log
+  file: log/discover_${server.id}.log

@@ -3,7 +3,6 @@ package com.seeu.framework.rpc;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -55,7 +54,7 @@ public class RpcBaseClient {
             this.host = host;
             this.port = port;
             this.handler = handler;
-            logger.debug("Netty client connect, address is " + host + ":" + port);
+            logger.debug("RPC client connect, address is " + host + ":" + port);
             bootstrap = new Bootstrap();
             bootstrap.group(workerGroup);
             bootstrap.channel(NioSocketChannel.class);
@@ -86,24 +85,18 @@ public class RpcBaseClient {
         }
 
         try {
-            logger.debug("Netty client do connect, address is " + host + ":" + port);
+            logger.debug("rpc client do connect, address is " + host + ":" + port);
             InetSocketAddress address = new InetSocketAddress(host, port);
             future = bootstrap.connect(address).sync();
-            future.addListener(new ChannelFutureListener() {
-                @Override
-                public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                    if (channelFuture.isSuccess()) {
-                        channel = channelFuture.channel();
-                        logger.info("operationComplete {}", channel.remoteAddress().toString());
+            future.addListener((ChannelFuture channelFuture) -> {
+                if (channelFuture.isSuccess()) {
+                    channel = channelFuture.channel();
+                    logger.info("operationComplete {}", channel.remoteAddress().toString());
 
-                    } else {
-                        channelFuture.channel().eventLoop().schedule(new Runnable() {
-                            @Override
-                            public void run() {
-                                doConnect();
-                            }
-                        }, 10, TimeUnit.SECONDS);
-                    }
+                } else {
+                    channelFuture.channel().eventLoop().schedule(() -> {
+                        doConnect();
+                    }, 10, TimeUnit.SECONDS);
                 }
             });
             return true;
