@@ -3,6 +3,7 @@ package com.seeu.framework.scanner;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageLite;
 import com.seeu.framework.rpc.RpcMsg.ServerType;
+import com.seeu.proto.Discover;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +22,7 @@ public class RpcInvokerHolder {
     private static Map<ServerType, Map<String, Invoker>> invokerClientMap = new HashMap<>();
     private static Map<ServerType, Map<String, Method>> clientMethod = new HashMap<>();
     private static Map<ServerType, Map<String, Method>> serverMethod = new HashMap<>();
+    private static ClassLoader classLoader;
 
 
     /**
@@ -47,7 +49,7 @@ public class RpcInvokerHolder {
     public static Object serviceInvoke(ServerType type, String method, ByteString proto) {
         Invoker invoker = getServiceInvoker(type, method);
         if (null == invoker) {
-            logger.error("serviceInvoke {} but can't find any invoker!", method);
+            logger.error("serviceInvoke {},{} but can't find any invoker!", type, method);
             return null;
         }
 
@@ -56,13 +58,22 @@ public class RpcInvokerHolder {
                 .computeIfAbsent(type, k -> new HashMap<>());
             Method mth = methodMap.get(method);
             if (null == mth) {
-                Class<?> cls = RpcInvokerHolder.class.getClassLoader()
-                    .loadClass("com.seeu.proto." + invoker.getProto());
+                if(null == classLoader) {
+                    classLoader = RpcInvokerHolder.class.getClassLoader();
+                }
+
+                Class<?> cls;
+                try {
+                    cls = classLoader.loadClass("com.seeu.proto." + invoker.getProto());
+                } catch (ClassNotFoundException e) {
+                    String className = "com.seeu.proto." + invoker.getProto().replace('.', '$');
+                    cls = classLoader.loadClass(className);
+                }
                 mth = cls.getMethod("parseFrom", ByteString.class);
                 methodMap.put(method, mth);
             }
 
-            MessageLite mlite = (MessageLite) mth.invoke(proto);
+            MessageLite mlite = (MessageLite) mth.invoke(null, proto);
 
             return invoker.invoke(mlite);
         } catch (Exception e) {
@@ -95,7 +106,7 @@ public class RpcInvokerHolder {
     public static Object clientInvoke(ServerType type, String method, ByteString proto) {
         Invoker invoker = getClientInvoker(type, method);
         if (null == invoker) {
-            logger.error("clientInvoke {} but can't find any invoker!", method);
+            logger.error("clientInvoke {}, {} but can't find any invoker!", type, method);
             return null;
         }
 
@@ -104,17 +115,27 @@ public class RpcInvokerHolder {
                 .computeIfAbsent(type, k -> new HashMap<>());
             Method mth = methodMap.get(method);
             if (null == mth) {
-                Class<?> cls = RpcInvokerHolder.class.getClassLoader()
-                    .loadClass("com.seeu.proto." + invoker.getProto());
+                if(null == classLoader) {
+                    classLoader = RpcInvokerHolder.class.getClassLoader();
+                }
+
+                Class<?> cls;
+                try {
+                    cls = classLoader.loadClass("com.seeu.proto." + invoker.getProto());
+                } catch (ClassNotFoundException e) {
+                    String className = "com.seeu.proto." + invoker.getProto().replace('.', '$');
+                    cls = classLoader.loadClass(className);
+                }
+
                 mth = cls.getMethod("parseFrom", ByteString.class);
                 methodMap.put(method, mth);
             }
 
-            MessageLite mlite = (MessageLite) mth.invoke(proto);
+            MessageLite mlite = (MessageLite) mth.invoke(null, proto);
 
             return invoker.invoke(mlite);
         } catch (Exception e) {
-            logger.error("serviceInvoke {}, proto: {} catch an error: ", method, invoker.getProto(),
+            logger.error("clientInvoke {}, proto: {} catch an error: ", method, invoker.getProto(),
                 e);
             return null;
         }

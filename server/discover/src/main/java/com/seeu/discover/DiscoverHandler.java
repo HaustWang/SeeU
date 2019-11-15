@@ -3,7 +3,6 @@ package com.seeu.discover;
 import com.google.protobuf.Message;
 import com.google.protobuf.MessageLite;
 import com.googlecode.protobuf.format.JsonFormat;
-import com.seeu.framework.discover.DiscoverClient;
 import com.seeu.framework.rpc.RpcMsg.ServerType;
 import com.seeu.framework.rpc.RpcServerHandler;
 import com.seeu.proto.Discover;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DiscoverHandler implements RegisterHandler {
+
     private final static Logger logger = LoggerFactory.getLogger(DiscoverHandler.class);
 
     private Map<ServerType, Map<Integer, Discover.register>> serverTypeSetMap = new ConcurrentHashMap<>();

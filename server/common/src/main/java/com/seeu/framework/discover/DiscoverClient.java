@@ -33,8 +33,8 @@ public class DiscoverClient extends RpcBaseClient {
             .setMsgSeq(FuncUtil.GenerateMsgSeq(serverInfo.getServerType(), serverInfo.getServerId(),
                 serverInfo.getStartInstant()))
             .setMethod(method)
-            .setSvrType(serverInfo.getServerType())
-            .setSvrId(serverInfo.getServerId())
+            .setSvrType(ServerType.UNKNOWN)
+            .setSvrId(0)
             .setNeedResponse(needResponse);
     }
 

@@ -1,6 +1,8 @@
 package com.seeu.access;
 
 import com.seeu.framework.discover.DiscoverClient;
+import com.seeu.framework.discover.ServerInfo;
+import com.seeu.framework.rpc.RpcMsg.ServerType;
 import com.seeu.framework.websocket.WebsocketServer;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -14,8 +16,8 @@ import org.springframework.context.annotation.Configuration;
 public class AccessServerInitializer {
 
     private static final Logger logger = LoggerFactory.getLogger(AccessServerInitializer.class);
-    @Autowired
-    DiscoverClient discoverClient;
+    @Value("${server.id}")
+    private int serverId;
     @Value("${websocket.port}")
     private int port;
     @Value("${server.wss.open}")
@@ -36,6 +38,10 @@ public class AccessServerInitializer {
     private WebsocketServer websocketServer;
     @Autowired
     private AccessWebsocketHandler websocketHandler;
+    @Autowired
+    private ServerInfo serverInfo;
+    @Autowired
+    DiscoverClient discoverClient;
 
     @PostConstruct
     public void start() {
@@ -46,6 +52,8 @@ public class AccessServerInitializer {
         }).start();
 
         new Thread(() -> {
+            serverInfo.setServerType(ServerType.ACCESS);
+            serverInfo.setServerId(serverId);
             discoverClient.init(serviceHost, servicePort);
             discoverClient.connect(discoverHost, discoverPort);
         }).start();

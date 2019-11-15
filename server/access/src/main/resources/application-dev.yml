@@ -15,5 +15,7 @@ spring:
 
 logging:
   level:
-    root: debug
+    root: info
+    com:
+      seeu: debug
 

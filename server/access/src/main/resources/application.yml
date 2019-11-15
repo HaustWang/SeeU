@@ -22,5 +22,7 @@ spring:
 
 logging:
   level:
-    root: debug
+    root: info
+    com:
+      seeu: debug
   file: log/access_${server.id}.log
