@@ -49,27 +49,36 @@ public class DiscoverClient extends RpcBaseClient {
             return false;
         }
 
-        Discover.register register = Discover.register.newBuilder()
-            .setSvrType(serverInfo.getServerType()).setSvrId(serverInfo.getServerId())
-            .setHost(serviceHost).setPort(servicePort)
-            .build();
+        try {
+            Discover.register register = Discover.register.newBuilder()
+                .setSvrType(serverInfo.getServerType()).setSvrId(serverInfo.getServerId())
+                .setHost(serviceHost).setPort(servicePort)
+                .build();
 
-        RpcMsg.request.Builder builder = generateDiscoverMsg("register", register.toByteString(),
-            false);
-        getChannel().writeAndFlush(builder);
+            RpcMsg.request.Builder builder = generateDiscoverMsg("register", register.toByteString(),
+                false);
+            getChannel().writeAndFlush(builder);
 
-        logger.info("connect to discover: {}:{}, register:{}", host, port, JsonFormat.printToString(builder.build()));
-        return true;
+            logger.info("connect to discover: {}:{}, register:{}", host, port, JsonFormat.printToString(builder.build()));
+            return true;
+        } catch (Exception e) {
+            logger.error("Catch an exception: ", e);
+            return false;
+        }
     }
 
     public void destroy() {
-        Discover.unregister unregister = Discover.unregister.newBuilder()
-            .setSvrType(serverInfo.getServerType()).setSvrId(serverInfo.getServerId())
-            .build();
+        try {
+            Discover.unregister unregister = Discover.unregister.newBuilder()
+                .setSvrType(serverInfo.getServerType()).setSvrId(serverInfo.getServerId())
+                .build();
 
-        RpcMsg.request.Builder builder = generateDiscoverMsg("unregister",
-            unregister.toByteString(), false);
-        getChannel().writeAndFlush(builder);
+            RpcMsg.request.Builder builder = generateDiscoverMsg("unregister",
+                unregister.toByteString(), false);
+            handler.write(builder, this);
+        } catch (Exception e) {
+            logger.error("Catch an exception: ", e);
+        }
 
         super.close();
     }

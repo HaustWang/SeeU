@@ -1,5 +1,8 @@
 package com.seeu.framework.rpc;
 
+import com.google.protobuf.MessageLite;
+import com.google.protobuf.MessageOrBuilder;
+import com.seeu.framework.rpc.RpcMsg.request.Builder;
 import com.seeu.framework.rpc.RpcMsg.response;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
@@ -39,6 +42,16 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<response> {
         } else {
             logger.error("receive response msg, but have no any request. {}, {}", rsp.getMsgSeq(),
                 rsp.getMethod());
+        }
+    }
+
+    public response write(MessageOrBuilder messageOrBuilder, RpcBaseClient client) throws Exception {
+        if(messageOrBuilder instanceof RpcMsg.request) {
+            return write((RpcMsg.request) messageOrBuilder, client);
+        } else if(messageOrBuilder instanceof RpcMsg.request.Builder) {
+            return write(((Builder) messageOrBuilder).build(), client);
+        } else {
+            throw new Exception("writeMsg but type error: " + messageOrBuilder.getClass().getName());
         }
     }
 

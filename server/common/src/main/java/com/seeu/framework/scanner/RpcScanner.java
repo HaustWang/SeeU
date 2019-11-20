@@ -1,6 +1,5 @@
 package com.seeu.framework.scanner;
 
-import com.seeu.framework.annotations.RpcCaller;
 import com.seeu.framework.annotations.RpcMethod;
 import com.seeu.framework.annotations.RpcService;
 import java.lang.reflect.Method;
@@ -27,59 +26,26 @@ public class RpcScanner implements BeanPostProcessor {
 
         Class<? extends Object> clazz = bean.getClass();
 
-        Class<?>[] interfaces = clazz.getInterfaces();
-
-        if (interfaces != null && interfaces.length > 0) {
-            //扫描类的所有接口父类
-            for (Class<?> interFace : interfaces) {
-                //判断是否为handler接口类
-                RpcService rpcService = interFace.getAnnotation(RpcService.class);
-                if (rpcService != null) {
-                    //找出命令方法
-                    Method[] methods = interFace.getMethods();
-                    if (methods != null && methods.length > 0) {
-                        for (Method method : methods) {
-                            RpcMethod rpcMethod = method.getAnnotation(RpcMethod.class);
-                            if (rpcMethod == null) {
-                                continue;
-                            }
-
-                            final String methodName = rpcMethod.method();
-
-                            if (RpcInvokerHolder.getServiceInvoker(rpcMethod.type(), methodName) == null) {
-                                RpcInvokerHolder
-                                    .addServiceInvoker(rpcMethod.type(), methodName,
-                                        Invoker.valueOf(method, bean, rpcMethod.proto()));
-                            } else {
-                                logger.warn("repeated service method {}", methodName);
-                            }
-                        }
+        //判断是否为handler接口类
+        RpcService rpcService = clazz.getAnnotation(RpcService.class);
+        if (rpcService != null) {
+            //找出命令方法
+            Method[] methods = clazz.getMethods();
+            if (methods != null && methods.length > 0) {
+                for (Method method : methods) {
+                    RpcMethod rpcMethod = method.getAnnotation(RpcMethod.class);
+                    if (rpcMethod == null) {
+                        continue;
                     }
 
-                    continue;
-                }
+                    final String methodName = rpcMethod.method();
 
-                RpcCaller rpcCaller = interFace.getAnnotation(RpcCaller.class);
-                if (rpcCaller != null) {
-                    //找出命令方法
-                    Method[] methods = interFace.getMethods();
-                    if (methods != null && methods.length > 0) {
-                        for (Method method : methods) {
-                            RpcMethod rpcMethod = method.getAnnotation(RpcMethod.class);
-                            if (rpcMethod == null) {
-                                continue;
-                            }
-
-                            final String methodName = rpcMethod.method();
-
-                            if (RpcInvokerHolder.getClientInvoker(rpcMethod.type(), methodName) == null) {
-                                RpcInvokerHolder
-                                    .addClientInvoker(rpcMethod.type(), methodName,
-                                        Invoker.valueOf(method, bean, rpcMethod.proto(), true));
-                            } else {
-                                logger.warn("repeated client method {}", methodName);
-                            }
-                        }
+                    if (RpcInvokerHolder.getServiceInvoker(rpcMethod.type(), methodName) == null) {
+                        RpcInvokerHolder
+                            .addServiceInvoker(rpcMethod.type(), methodName,
+                                Invoker.valueOf(method, bean, rpcMethod.proto()));
+                    } else {
+                        logger.warn("repeated service method {}", methodName);
                     }
                 }
             }
