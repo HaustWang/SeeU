@@ -14,9 +14,10 @@ public class Invoker {
      */
     private Object target;
 
+    /**
+     * 协议名
+     */
     private String proto;
-
-    private boolean isClient = false;
 
     public static Invoker valueOf(Method method, Object target, String proto){
         Invoker invoker = new Invoker();
@@ -34,15 +35,6 @@ public class Invoker {
         this.proto = proto;
     }
 
-    public static Invoker valueOf(Method method, Object target, String proto, boolean isClient){
-        Invoker invoker = new Invoker();
-        invoker.setMethod(method);
-        invoker.setTarget(target);
-        invoker.setProto(proto);
-        invoker.setClient(isClient);
-        return invoker;
-    }
-
     /**
      * 执行
      * @param paramValues
@@ -53,11 +45,7 @@ public class Invoker {
      */
     public Object invoke(Object... paramValues){
         try {
-            if(isClient) {
-
-            } else {
-                return method.invoke(target, paramValues);
-            }
+            return method.invoke(target, paramValues);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (IllegalArgumentException e) {
@@ -82,13 +70,5 @@ public class Invoker {
 
     public void setTarget(Object target) {
         this.target = target;
-    }
-
-    public boolean isClient() {
-        return isClient;
-    }
-
-    public void setClient(boolean client) {
-        isClient = client;
     }
 }

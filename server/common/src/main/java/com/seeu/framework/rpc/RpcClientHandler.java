@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -28,6 +29,9 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<response> {
         Executors.newFixedThreadPool(10 + Runtime.getRuntime().availableProcessors() * 2);
     private Map<Integer, response> responseMap = new ConcurrentHashMap<>();
     private Map<Integer, Object> threadObjectMap = new ConcurrentHashMap<>();
+
+    @Autowired
+    RpcClientManger rpcClientManger;
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, response rsp)
@@ -100,5 +104,13 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<response> {
 
     response getResponse(Integer reqId) {
         return responseMap.remove(reqId);
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        super.channelInactive(ctx);
+
+        RpcBaseClient client = rpcClientManger.removeClient(ctx.channel());
+        client.clientInactive();
     }
 }

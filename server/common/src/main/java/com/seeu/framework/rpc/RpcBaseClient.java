@@ -1,10 +1,12 @@
 package com.seeu.framework.rpc;
 
+import com.seeu.framework.rpc.RpcMsg.ServerType;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
@@ -18,9 +20,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
-@Component
 public class RpcBaseClient {
 
     private static final Logger logger = LoggerFactory.getLogger(RpcBaseClient.class);
@@ -32,6 +32,24 @@ public class RpcBaseClient {
     protected Channel channel;
     protected String host;
     protected int port;
+    protected ServerType targetType;
+    protected int targetId;
+
+    public ServerType getTargetType() {
+        return targetType;
+    }
+
+    public void setTargetType(ServerType targetType) {
+        this.targetType = targetType;
+    }
+
+    public int getTargetId() {
+        return targetId;
+    }
+
+    public void setTargetId(int targetId) {
+        this.targetId = targetId;
+    }
 
     public String getHost() {
         return host;
@@ -62,13 +80,11 @@ public class RpcBaseClient {
             bootstrap.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 protected void initChannel(SocketChannel socketChannel) {
-                    socketChannel.pipeline()
-                        .addLast(new IdleStateHandler(0, 30, 0, TimeUnit.SECONDS));
-                    socketChannel.pipeline()
-                        .addLast(new ProtobufDecoder(RpcMsg.response.getDefaultInstance()));
-                    socketChannel.pipeline().addLast(new ProtobufEncoder());
-
-                    socketChannel.pipeline().addLast(handler);
+                    ChannelPipeline pipeline = socketChannel.pipeline();
+                    pipeline.addLast(new IdleStateHandler(0, 30, 0, TimeUnit.SECONDS));
+                    pipeline.addLast(new ProtobufDecoder(RpcMsg.response.getDefaultInstance()));
+                    pipeline.addLast(new ProtobufEncoder());
+                    pipeline.addLast(handler);
                 }
             });
 
@@ -92,7 +108,7 @@ public class RpcBaseClient {
                 if (channelFuture.isSuccess()) {
                     channel = channelFuture.channel();
                     logger.info("operationComplete {}", channel.remoteAddress().toString());
-
+                    clientActive();
                 } else {
                     channelFuture.channel().eventLoop().schedule(() -> {
                         doConnect();
@@ -118,5 +134,12 @@ public class RpcBaseClient {
         } catch (Exception e) {
             logger.error("catch an exception:", e);
         }
+    }
+
+    public void clientActive() {
+
+    }
+
+    public void clientInactive() {
     }
 }

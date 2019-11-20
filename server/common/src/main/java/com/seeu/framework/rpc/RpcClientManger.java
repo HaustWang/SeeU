@@ -6,6 +6,7 @@ import com.seeu.framework.discover.ServerInfo;
 import com.seeu.framework.rpc.RpcMsg.ServerType;
 import com.seeu.framework.utils.FuncUtil;
 import com.seeu.proto.Discover;
+import io.netty.channel.Channel;
 import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -26,7 +27,9 @@ public class RpcClientManger {
 
     @Autowired
     RpcClientHandler clientHandler;
+
     Map<ServerType, Map<Integer, RpcBaseClient>> rpcClientMap = new HashMap<>();
+    Map<String, RpcBaseClient> rpcChannelClientMap = new HashMap<>();
 
     public RpcMsg.request generateRpcRequest(String method, MessageLite msg,
         boolean needResponse) {
@@ -96,6 +99,8 @@ public class RpcClientManger {
                 client.connect(infoResp.getHost(), infoResp.getPort(), clientHandler);
 
                 clientMap.put(serverId, client);
+
+                rpcChannelClientMap.put(client.getChannel().toString(), client);
             }
         }
 
@@ -118,5 +123,38 @@ public class RpcClientManger {
     public void push(ServerType serverType, int serverId, String method,
         MessageLite msg) {
         request(serverType, serverId, method, msg, false);
+    }
+
+    private String getChannelKey(Channel channel) {
+        return channel.id().toString();
+    }
+
+    public void addClient(RpcBaseClient client) {
+        Map<Integer, RpcBaseClient> clientMap = rpcClientMap
+            .computeIfAbsent(client.getTargetType(), k -> new HashMap<>());
+        clientMap.put(client.getTargetId(), client);
+
+        rpcChannelClientMap.put(getChannelKey(client.getChannel()), client);
+    }
+
+    public RpcBaseClient removeClient(RpcBaseClient client) {
+        Map<Integer, RpcBaseClient> clientMap = rpcClientMap.get(client.getTargetType());
+        if(null != clientMap) {
+            clientMap.remove(client.getTargetId());
+        }
+
+        return rpcChannelClientMap.remove(getChannelKey(client.getChannel()));
+    }
+
+    public RpcBaseClient removeClient(Channel channel) {
+        RpcBaseClient client = rpcChannelClientMap.remove(getChannelKey(channel));
+        if(null != client) {
+            Map<Integer, RpcBaseClient> clientMap = rpcClientMap.get(client.getTargetType());
+            if(null != clientMap) {
+                clientMap.remove(client.getTargetId());
+            }
+        }
+
+        return client;
     }
 }

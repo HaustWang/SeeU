@@ -4,6 +4,7 @@ import com.google.protobuf.ByteString;
 import com.googlecode.protobuf.format.JsonFormat;
 import com.seeu.framework.rpc.RpcBaseClient;
 import com.seeu.framework.rpc.RpcClientHandler;
+import com.seeu.framework.rpc.RpcClientManger;
 import com.seeu.framework.rpc.RpcMsg;
 import com.seeu.framework.rpc.RpcMsg.ServerType;
 import com.seeu.framework.utils.FuncUtil;
@@ -26,6 +27,9 @@ public class DiscoverClient extends RpcBaseClient {
     String serviceHost;
     int servicePort;
 
+    @Autowired
+    RpcClientManger rpcClientManger;
+
     private RpcMsg.request.Builder generateDiscoverMsg(String method, ByteString content,
         boolean needResponse) {
         return RpcMsg.request.newBuilder()
@@ -41,6 +45,8 @@ public class DiscoverClient extends RpcBaseClient {
     public void init(String serviceHost, int servicePort) {
         this.serviceHost = serviceHost;
         this.servicePort = servicePort;
+        this.setTargetId(0);
+        this.setTargetType(ServerType.DISCOVER);
     }
 
     public boolean connect(String host, int port) {
@@ -49,22 +55,7 @@ public class DiscoverClient extends RpcBaseClient {
             return false;
         }
 
-        try {
-            Discover.register register = Discover.register.newBuilder()
-                .setSvrType(serverInfo.getServerType()).setSvrId(serverInfo.getServerId())
-                .setHost(serviceHost).setPort(servicePort)
-                .build();
-
-            RpcMsg.request.Builder builder = generateDiscoverMsg("register", register.toByteString(),
-                false);
-            getChannel().writeAndFlush(builder);
-
-            logger.info("connect to discover: {}:{}, register:{}", host, port, JsonFormat.printToString(builder.build()));
-            return true;
-        } catch (Exception e) {
-            logger.error("Catch an exception: ", e);
-            return false;
-        }
+        return true;
     }
 
     public void destroy() {
@@ -81,6 +72,7 @@ public class DiscoverClient extends RpcBaseClient {
         }
 
         super.close();
+        rpcClientManger.removeClient(this);
     }
 
     public Discover.getServiceInfoResp getServiceInfo(ServerType serverType, int serverId) {
@@ -102,5 +94,30 @@ public class DiscoverClient extends RpcBaseClient {
             logger.error("catch an exception: ", e);
             return null;
         }
+    }
+
+    @Override
+    public void clientActive() {
+        try {
+            Discover.register register = Discover.register.newBuilder()
+                .setSvrType(serverInfo.getServerType()).setSvrId(serverInfo.getServerId())
+                .setHost(serviceHost).setPort(servicePort)
+                .build();
+
+            RpcMsg.request.Builder builder = generateDiscoverMsg("register", register.toByteString(),
+                false);
+            handler.write(builder, this);
+
+            logger.info("connect to discover: {}:{}, register:{}", host, port, JsonFormat.printToString(builder.build()));
+
+            rpcClientManger.addClient(this);
+        } catch (Exception e) {
+            logger.error("Catch an exception: ", e);
+        }
+    }
+
+    @Override
+    public void clientInactive() {
+        this.connect(host, port);
     }
 }
