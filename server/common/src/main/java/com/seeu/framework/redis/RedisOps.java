@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 import redis.clients.jedis.Jedis;
@@ -11,7 +13,7 @@ import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.exceptions.JedisDataException;
 
-
+@Slf4j
 @Repository
 public class RedisOps {
     private JedisCluster jedisCluster;
@@ -34,6 +36,7 @@ public class RedisOps {
             try {
                 keys.addAll(connection.keys(key));
             } catch (Exception e) {
+                log.error("catch an exception:", e);
             } finally {
                 connection.close();
             }

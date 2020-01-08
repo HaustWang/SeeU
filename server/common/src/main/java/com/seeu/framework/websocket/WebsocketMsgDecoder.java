@@ -7,26 +7,25 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
-import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
+
+@Slf4j
 @Sharable
 public class WebsocketMsgDecoder extends ProtobufDecoder {
-    private Logger logger = LoggerFactory.getLogger(WebsocketMsgDecoder.class);
-
     public WebsocketMsgDecoder(MessageLite prototype) {
-        super(prototype, (ExtensionRegistry)null);
+        super(prototype, null);
     }
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
         byte type = msg.readByte();
-        if(type == 1) {
+        if (type == 1) {
             byte[] by = new byte[msg.readableBytes()];
             msg.readBytes(by);
             out.add(new String(by));
-        } else if(type == 2){
+        } else if (type == 2) {
             super.decode(ctx, Unpooled.copiedBuffer(msg), out);
         }
     }

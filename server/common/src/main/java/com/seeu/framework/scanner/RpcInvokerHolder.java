@@ -3,16 +3,14 @@ package com.seeu.framework.scanner;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageLite;
 import com.seeu.framework.rpc.RpcMsg.ServerType;
+import lombok.extern.slf4j.Slf4j;
+
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class RpcInvokerHolder {
-
-    private static Logger logger = LoggerFactory.getLogger(RpcInvokerHolder.class);
-
     /**
      * 命令调用器缓存
      */
@@ -46,13 +44,13 @@ public class RpcInvokerHolder {
     public static Object serviceInvoke(ServerType type, String method, ByteString proto) {
         Invoker invoker = getServiceInvoker(type, method);
         if (null == invoker) {
-            logger.error("serviceInvoke {},{} but can't find any invoker!", type, method);
+            log.error("serviceInvoke {},{} but can't find any invoker!", type, method);
             return null;
         }
 
         try {
             Map<String, Method> methodMap = serverMethod
-                .computeIfAbsent(type, k -> new HashMap<>());
+                    .computeIfAbsent(type, k -> new HashMap<>());
             Method mth = methodMap.get(method);
             if (null == mth) {
                 if (null == classLoader) {
@@ -74,8 +72,8 @@ public class RpcInvokerHolder {
 
             return invoker.invoke(mlite);
         } catch (Exception e) {
-            logger.error("serviceInvoke {}, proto: {} catch an error: ", method, invoker.getProto(),
-                e);
+            log.error("serviceInvoke {}, proto: {} catch an error: ", method, invoker.getProto(),
+                    e);
             return null;
         }
     }

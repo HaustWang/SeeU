@@ -4,15 +4,11 @@ import com.google.protobuf.MessageLite;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.HttpHeaders;
-import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler.HandshakeComplete;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public abstract class WebsocketHandler extends SimpleChannelInboundHandler<Object> {
-
-    private static final Logger logger = LoggerFactory.getLogger(WebSocketServerHandshaker.class);
-
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
         // 判断是否关闭链路的指令
@@ -46,7 +42,7 @@ public abstract class WebsocketHandler extends SimpleChannelInboundHandler<Objec
      */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.error("catch an exception: ", cause);
+        log.error("catch an exception: ", cause);
         ctx.close();
     }
 
@@ -60,11 +56,12 @@ public abstract class WebsocketHandler extends SimpleChannelInboundHandler<Objec
 
     /**
      * 处理protobuf消息
+     *
      * @param ctx 当前连接的上下文
      * @param msg websocket消息内容
      */
     public abstract void handleProtobufMessage(ChannelHandlerContext ctx, MessageLite msg);
 
     public abstract void recordHttpUsefulHeaders(ChannelHandlerContext ctx,
-        HttpHeaders httpHeaders);
+                                                 HttpHeaders httpHeaders);
 }

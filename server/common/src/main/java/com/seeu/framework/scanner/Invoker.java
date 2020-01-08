@@ -46,11 +46,7 @@ public class Invoker {
     public Object invoke(Object... paramValues){
         try {
             return method.invoke(target, paramValues);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
             e.printStackTrace();
         }
         return null;

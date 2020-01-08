@@ -4,18 +4,19 @@ import com.seeu.framework.discover.DiscoverClient;
 import com.seeu.framework.discover.ServerInfo;
 import com.seeu.framework.rpc.RpcMsg.ServerType;
 import com.seeu.framework.websocket.WebsocketServer;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
+@Slf4j
 @Configuration
 public class AccessServerInitializer {
-
-    private static final Logger logger = LoggerFactory.getLogger(AccessServerInitializer.class);
+    @Autowired
+    DiscoverClient discoverClient;
     @Value("${server.id}")
     private int serverId;
     @Value("${websocket.port}")
@@ -40,14 +41,12 @@ public class AccessServerInitializer {
     private AccessWebsocketHandler websocketHandler;
     @Autowired
     private ServerInfo serverInfo;
-    @Autowired
-    DiscoverClient discoverClient;
 
     @PostConstruct
     public void start() {
         new Thread(() -> {
-            logger.debug("AccessServerInitializer init {}, {}, {}, {}", port, openWss, certificate,
-                password);
+            log.debug("AccessServerInitializer init {}, {}, {}, {}", port, openWss, certificate,
+                    password);
             websocketServer.start(port, websocketHandler, openWss, certificate, password);
         }).start();
 

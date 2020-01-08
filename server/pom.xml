@@ -11,7 +11,7 @@
   <modules>
     <module>common</module>
     <module>access</module>
-    <module>serviceDiscover</module>
+    <module>discover</module>
   </modules>
 
   <parent>

@@ -2,29 +2,22 @@ package com.seeu.framework.rpc;
 
 import com.seeu.framework.rpc.RpcMsg.ServerType;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.timeout.IdleStateHandler;
+import lombok.extern.slf4j.Slf4j;
+
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class RpcBaseClient {
-
-    private static final Logger logger = LoggerFactory.getLogger(RpcBaseClient.class);
-
     protected final EventLoopGroup workerGroup = new NioEventLoopGroup();
     protected RpcClientHandler handler;
     protected Bootstrap bootstrap;
@@ -72,7 +65,7 @@ public class RpcBaseClient {
             this.host = host;
             this.port = port;
             this.handler = handler;
-            logger.debug("RPC client connect, address is " + host + ":" + port);
+            log.debug("RPC client connect, address is " + host + ":" + port);
             bootstrap = new Bootstrap();
             bootstrap.group(workerGroup);
             bootstrap.channel(NioSocketChannel.class);
@@ -90,7 +83,7 @@ public class RpcBaseClient {
 
             return doConnect();
         } catch (Exception e) {
-            logger.error("catch an exception:", e);
+            log.error("catch an exception:", e);
             return false;
         }
     }
@@ -101,23 +94,21 @@ public class RpcBaseClient {
         }
 
         try {
-            logger.debug("rpc client do connect, address is " + host + ":" + port);
+            log.debug("rpc client do connect, address is " + host + ":" + port);
             InetSocketAddress address = new InetSocketAddress(host, port);
             future = bootstrap.connect(address).sync();
             future.addListener((ChannelFuture channelFuture) -> {
                 if (channelFuture.isSuccess()) {
                     channel = channelFuture.channel();
-                    logger.info("operationComplete {}", channel.remoteAddress().toString());
+                    log.info("operationComplete {}", channel.remoteAddress().toString());
                     clientActive();
                 } else {
-                    channelFuture.channel().eventLoop().schedule(() -> {
-                        doConnect();
-                    }, 10, TimeUnit.SECONDS);
+                    channelFuture.channel().eventLoop().schedule((Runnable) this::doConnect, 10, TimeUnit.SECONDS);
                 }
             });
             return true;
         } catch (Exception e) {
-            logger.error("catch an exception:", e);
+            log.error("catch an exception:", e);
             ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
             service.schedule(() -> {
                 doConnect();
@@ -132,7 +123,7 @@ public class RpcBaseClient {
             future.channel().close();
             workerGroup.shutdownGracefully();
         } catch (Exception e) {
-            logger.error("catch an exception:", e);
+            log.error("catch an exception:", e);
         }
     }
 

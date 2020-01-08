@@ -8,19 +8,17 @@ import com.seeu.framework.annotations.RpcService;
 import com.seeu.framework.rpc.RpcMsg.ServerType;
 import com.seeu.framework.rpc.RpcServerHandler;
 import com.seeu.proto.Discover;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+@Slf4j
 @Component
 @RpcService
 public class DiscoverHandler {
-
-    private final static Logger logger = LoggerFactory.getLogger(DiscoverHandler.class);
-
     private Map<ServerType, Map<Integer, Discover.register>> serverTypeSetMap = new ConcurrentHashMap<>();
 
     @Autowired
@@ -28,12 +26,12 @@ public class DiscoverHandler {
 
     @RpcMethod(method = "register", proto = "Discover.register", type = ServerType.UNKNOWN)
     public MessageLite register(MessageLite message) {
-        logger.info("server register: {}", JsonFormat.printToString((Message) message));
+        log.info("server register: {}", JsonFormat.printToString((Message) message));
         Discover.register register = (Discover.register) message;
 
         ServerType type = register.getSvrType();
         Map<Integer, Discover.register> serverMap = serverTypeSetMap
-            .computeIfAbsent(type, k -> new ConcurrentHashMap<>());
+                .computeIfAbsent(type, k -> new ConcurrentHashMap<>());
         serverMap.put(register.getSvrId(), register);
 
         return null;

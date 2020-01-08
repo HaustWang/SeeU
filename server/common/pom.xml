@@ -12,11 +12,18 @@
   <artifactId>common</artifactId>
   <packaging>jar</packaging>
 
+  <properties>
+    <netty.version>4.1.27.Final</netty.version>
+    <protobuf.version>3.9.2</protobuf.version>
+    <protobuf-format.version>1.2</protobuf-format.version>
+    <jedis.version>2.9.0</jedis.version>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-all</artifactId>
-      <version>4.1.27.Final</version>
+      <version>${netty.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -25,7 +32,7 @@
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
-      <version>3.9.2</version>
+      <version>${protobuf.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>
@@ -34,12 +41,16 @@
     <dependency>
       <groupId>com.googlecode.protobuf-java-format</groupId>
       <artifactId>protobuf-java-format</artifactId>
-      <version>1.2</version>
+      <version>${protobuf-format.version}</version>
     </dependency>
     <dependency>
       <groupId>redis.clients</groupId>
       <artifactId>jedis</artifactId>
-      <version>2.9.0</version>
+      <version>${jedis.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
     </dependency>
   </dependencies>
 </project>
