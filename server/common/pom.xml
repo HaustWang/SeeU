@@ -13,7 +13,7 @@
   <packaging>jar</packaging>
 
   <properties>
-    <netty.version>4.1.27.Final</netty.version>
+    <netty.version>[4.1.42,)</netty.version>
     <protobuf.version>3.9.2</protobuf.version>
     <protobuf-format.version>1.2</protobuf-format.version>
     <jedis.version>2.9.0</jedis.version>
